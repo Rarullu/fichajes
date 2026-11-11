@@ -1,0 +1,19 @@
+{
+  "name": "fichajes",
+  "version": "1.0.0",
+  "description": "Registro de jornada (fichajes) para pequeñas empresas: registro inalterable, móvil + NFC, informes PDF.",
+  "type": "module",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=22.13.0" },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "express": "^5.1.0",
+    "pdfkit": "^0.17.2"
+  }
+}

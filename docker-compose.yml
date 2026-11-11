@@ -1,0 +1,10 @@
+services:
+  fichajes:
+    build: .
+    container_name: fichajes
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${PUERTO:-3080}:3000"
+    volumes:
+      - ./data:/app/data   # base de datos, copias diarias y secreto: NO borrar
