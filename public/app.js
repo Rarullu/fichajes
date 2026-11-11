@@ -118,6 +118,12 @@ const cola = { leer: () => guardado('cola') || [], poner: (c) => guardado('cola'
 const SIGUIENTE = { entrada: 'trabajando', pausa_inicio: 'pausa', pausa_fin: 'trabajando', salida: 'fuera' };
 const OPCIONES = { fuera: ['entrada'], trabajando: ['pausa_inicio', 'salida'], pausa: ['pausa_fin', 'salida'] };
 
+// crypto.randomUUID solo existe con HTTPS; esto funciona también por http en la red local.
+function idUnico() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 function posicion() {
   if (!G.est.opciones.geo || !navigator.geolocation) return Promise.resolve({});
   return new Promise((ok) => navigator.geolocation.getCurrentPosition(
@@ -127,7 +133,7 @@ function posicion() {
 
 async function fichar(tipo) {
   const momento = new Date().toISOString();
-  const item = { tipo, id_cliente: crypto.randomUUID(), lugar: lugarActual()?.token, ...(await posicion()) };
+  const item = { tipo, id_cliente: idUnico(), lugar: lugarActual()?.token, ...(await posicion()) };
   try {
     G.sit = await api('/fichar', { metodo: 'POST', cuerpo: item });
     guardado('sit', G.sit);
@@ -450,7 +456,10 @@ const ACCIONES = {
   ir: (d) => { G.vista = d.v; pintar(); },
   ajuste: (d) => { G.ajuste = d.k; pintar(); },
   mes: (d) => { G.mes = moverMes(G.mes, Number(d.n)); pintar(); },
-  fichar: (d, boton) => { boton.disabled = true; return fichar(d.t); },
+  fichar: async (d, boton) => {
+    boton.disabled = true;
+    try { await fichar(d.t); } catch (e) { tostada('No se pudo fichar: ' + e.message, true); pintar(); }
+  },
   nfc: leerNfc,
   olvidarRechazados: () => { guardado('rechazados', []); pintar(); },
   verRegistro: (d) => { G.adminUsuario = Number(d.id); G.vista = 'registro'; pintar(); },

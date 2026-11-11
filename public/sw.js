@@ -1,5 +1,5 @@
 // Service worker: guarda la app para que abra sin conexión. Nunca guarda datos de /api.
-const CACHE = 'fichajes-v1';
+const CACHE = 'fichajes-v2';
 const BASE = ['/', '/estilos.css', '/app.js', '/manifest.json', '/icono.svg'];
 
 self.addEventListener('install', (e) => {
